@@ -1,4 +1,4 @@
-import {  Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {  ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -6,9 +6,9 @@ import { TaskService } from '../../services/task.service';
 
 import { TranslateService } from '@ngx-translate/core';
 import { CreateEditModalComponent } from './create-edit-task/modal.component';
-import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { Task } from 'src/app/_models/task';
+import { BehaviorSubject } from 'rxjs';
 
 
 
@@ -19,7 +19,7 @@ import { Task } from 'src/app/_models/task';
 })
 
 export class TaskListComponent implements OnInit {
-  listTask: Task[] = [];
+  listTask = new BehaviorSubject<Task[]>([])
   taskHours: number = 0;
 
   displayedColumns: string[] = [ 'name', 'description', 'estimate', 'state', 'action'];
@@ -36,7 +36,7 @@ export class TaskListComponent implements OnInit {
   }
 
   constructor(public translate: TranslateService, private taskService: TaskService, 
-    public dialog: MatDialog, public snackBar:MatSnackBar,private router: Router) 
+    public dialog: MatDialog, public snackBar:MatSnackBar,private cdRef:ChangeDetectorRef) 
   {
     translate.addLangs(['en', 'es']);
     translate.setDefaultLang('es');
@@ -44,9 +44,15 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTasks();
-    this.dataSource = new MatTableDataSource(this.listTask);
+    this.listTask.subscribe((tasks)=>{
+      this.dataSource = new MatTableDataSource(tasks);
+      this.taskHours = this.getHoursOf(tasks);
+    })
   }
-
+  ngAfterViewChecked()
+  {
+    this.cdRef.detectChanges();
+  }
   setDataSourceAttributes() {
     this.dataSource.paginator = this.paginatorTask;
   }
@@ -55,37 +61,23 @@ export class TaskListComponent implements OnInit {
   }
   
   getTasks(): void {
-    let [tasks, hours] = this.taskService.getAllTask();
-    this.listTask = tasks;
-    this.taskHours = hours;
-    this.reloadTable();
+    this.listTask.next(this.taskService.getAllTask());
   }
 
   getPlannedTask(): void {
-    let [tasks, hours] = this.taskService.getPlannedTask();
-    this.listTask = tasks;
-    this.taskHours = hours;
-    this.reloadTable();
+    this.listTask.next(this.taskService.getPlannedTask());
   }
 
   getInProgressTask(): void {
-    let [tasks, hours] = this.taskService.getInProgressTask();
-    this.listTask = tasks;
-    this.taskHours = hours;
-    this.reloadTable();
+    this.listTask.next(this.taskService.getInProgressTask());
   }
 
   getClosedTask(): void {
-    let [tasks, hours] = this.taskService.getClosedTask();
-    this.listTask = tasks;
-    this.taskHours = hours;
-    this.reloadTable();
+    this.listTask.next(this.taskService.getClosedTask());
   }
 
   deleteTask(id:number){
-    this.listTask = this.taskService.delete(id);
-    this.dataSource = new MatTableDataSource(this.listTask);
-    this.dataSource._updateChangeSubscription();
+    this.listTask.next(this.taskService.delete(id));
   };
   
   applyFilter(event: Event) {
@@ -104,9 +96,7 @@ export class TaskListComponent implements OnInit {
       if(result == null){
         return;
       }
-      this.taskService.createOrUpdateTask(result);
-      this.reloadTask();
-      this.reloadTable();
+      this.listTask.next(this.taskService.createOrUpdateTask(result));
     });    
   } 
 
@@ -119,19 +109,9 @@ export class TaskListComponent implements OnInit {
       if(result == null){
         return;
       }
-      let editedTask = this.taskService.createOrUpdateTask(result);
-      this.replaceTaskIfItsNecessary(editedTask);
+      this.listTask.next(this.taskService.createOrUpdateTask(result));
     });
 
-  }
-
-  replaceTaskIfItsNecessary(task: any){
-    let updateItem = this.listTask.find(this.findIndexToUpdate, task.id);
-
-    let index = this.listTask.indexOf(updateItem);
-    
-    this.listTask[index] = task;
-    this.reloadTable()
   }
 
   findIndexToUpdate(newItem) { 
@@ -139,8 +119,7 @@ export class TaskListComponent implements OnInit {
   }
 
   changeState(idTask: number){
-    var task = this.taskService.changeTaskState(idTask);
-    this.replaceTaskIfItsNecessary(task);
+    this.listTask.next(this.taskService.changeTaskState(idTask));
   }
 
   public onOptionsSelected(event) {
@@ -172,22 +151,19 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  reloadTable(){
-    this.dataSource = new MatTableDataSource(this.listTask);
-    this.setDataSourceAttributes();
-    let filterValue = this.filter.nativeElement.value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  forceClose(taskId){
+    this.listTask.next(this.taskService.close(taskId));
   }
 
-  forceClose(taskId){
-    var task = this.taskService.close(taskId);
-    this.replaceTaskIfItsNecessary(task);
-    this.reloadTable();
-
+  getHoursOf (taskList: Task[]){
+    if(taskList.length > 0){
+      return taskList.map(task => task.getHours()).reduce(function(a, b)
+      {
+        return a + b;
+      });
+    }
+    return 0;
+    
   }
 }
 

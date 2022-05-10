@@ -30,67 +30,56 @@ export class TaskService {
     ]
   }
 
-  public getAllTask(): [Task [], number]{
-    const allTask =  this.tasks;
-    let hours = this.getHoursOf(allTask);
-
-    return [allTask, hours];
+  public getAllTask(): Task []{
+    return this.tasks;
   }
 
-  public getPlannedTask(): [Task [], number]{
+  public getPlannedTask(): Task []{
     const planedTask = this.tasks.filter(task => task.isPlanned());
-    let hours = this.getHoursOf(planedTask);
-    return [planedTask, hours];
+    return planedTask;
   }
 
-  public getClosedTask(): [Task [], number]{
+  public getClosedTask(): Task []{
     const closedTask =  this.tasks.filter(task => task.isCompleted());
-    let hours = this.getHoursOf(closedTask);
 
-    return [closedTask, hours];
+    return closedTask;
   }
 
-  public getInProgressTask(): [Task [], number]{
+  public getInProgressTask(): Task []{
     const inProgressTask =  this.tasks.filter(task => task.isInProgress());
-    let hours = this.getHoursOf(inProgressTask);
 
-    return [inProgressTask, hours];
+    return inProgressTask;
   }
 
-  public getHoursOf (taskList){
-    return taskList.map(task => task.getHours()).reduce(function(a, b)
-    {
-      return a + b;
-    });
-  }
-
-  createOrUpdateTask(task: any): Task{
+  createOrUpdateTask(task: Task): Task[]{
 
     if (task.id == 0){
       task.id = this.tasks.length + 1;
       this.tasks.push(task);
-      return task;
     }
     else{
-      let currentTask = this.getTakById(task.id)
-      let index = this.tasks.indexOf(currentTask);
-      this.tasks[index] = task;
-      return task;
+      this.tasks.forEach((currentTask, index)=>{
+        if(currentTask.id === task.id){
+          this.tasks[index] = task;
+        }
+      });
     }
+    return this.tasks;
   }
 
   close( idTask: number){
-    var taskRes= this.getTakById(idTask);
+    let taskRes= this.getTakById(idTask);
     taskRes.close();
     
     let index = this.tasks.indexOf(taskRes);
     this.tasks[index] = taskRes;
-    return taskRes;
+    return this.tasks;
   }
 
   getTakById(idTask: number): Task{
-    var task = this.tasks.find((task) => task.id == idTask);
-
+    let task = this.tasks.find((t) =>{ 
+      return t.id == idTask
+    });
     if(task == null){
       throw new Error("The task doesn't exist");
     }
@@ -98,12 +87,12 @@ export class TaskService {
   }
 
   changeTaskState(idTask: number) {
-    var task = this.getTakById(idTask);
+    let task = this.getTakById(idTask);
     task.changeState();
 
     let index = this.tasks.indexOf(task);
     this.tasks[index] = task;
-    return task;
+    return this.tasks;
   }
 
   delete(idTask: number): Task[] {
