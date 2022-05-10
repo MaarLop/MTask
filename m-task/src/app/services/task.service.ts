@@ -68,11 +68,12 @@ export class TaskService {
   }
 
   close( idTask: number){
-    let taskRes= this.getTakById(idTask);
-    taskRes.close();
+    this.tasks.forEach((currentTask)=>{
+      if(currentTask.id === idTask){
+        currentTask.close();
+      }
+    });
     
-    let index = this.tasks.indexOf(taskRes);
-    this.tasks[index] = taskRes;
     return this.tasks;
   }
 
@@ -87,11 +88,11 @@ export class TaskService {
   }
 
   changeTaskState(idTask: number) {
-    let task = this.getTakById(idTask);
-    task.changeState();
-
-    let index = this.tasks.indexOf(task);
-    this.tasks[index] = task;
+    this.tasks.forEach((currentTask)=>{
+      if(currentTask.id === idTask){
+        currentTask.changeState();
+      }
+    });
     return this.tasks;
   }
 

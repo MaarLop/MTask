@@ -22,7 +22,7 @@ export class Task {
 
     close() {
       if(this.state.canClose()){
-        this.state = this.state.nextState;
+        this.state = new Completed();
       }
       else {
         throw new Error('Task must be in progress state to be closed')
