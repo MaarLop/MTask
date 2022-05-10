@@ -23,7 +23,7 @@ export class TaskService {
       new Task(5, "Implements Google login", "Use OAuth",  new DayEstimation(2), new Completed()),
       new Task(6, "Create component task list", "Task list must have pagination and a filter", new HourEstimation(3), new InProgress),
       new Task(8, "Implements task service", "It has to get filter of state", new HourEstimation(2), new Planned()),
-      new Task(9, "Create dummy task", "", new HourEstimation(6), new InProgress()),
+      new Task(9, "Create dummy task", "Create dummy data", new HourEstimation(6), new InProgress()),
       new Task(10, "Implements task model", "A task must have a name, a description, an amount, a estimation type and a state", new HourEstimation(2), new Planned()),
       new Task(11, "Translate views", "Implement an i18n with translate service for make the  internalization of the site",  new DayEstimation(1), new InProgress),
       new Task(12, "Translate snackbar text", "Use the translate service to translate snackbar alert", new HourEstimation(3), new InProgress())

@@ -1,4 +1,4 @@
-import {  ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {  ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CreateEditModalComponent } from './create-edit-task/modal.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { Task } from 'src/app/_models/task';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 
 
@@ -18,13 +18,14 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./tasks-list.component.css']
 })
 
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements OnInit, OnDestroy {
   listTask = new BehaviorSubject<Task[]>([])
   taskHours: number = 0;
 
   displayedColumns: string[] = [ 'name', 'description', 'estimate', 'state', 'action'];
   dataSource: MatTableDataSource<any>;
   selected = '1';
+  subscription: Subscription;
 
   @ViewChild('input', {static: true}) filter: ElementRef;
   
@@ -41,10 +42,14 @@ export class TaskListComponent implements OnInit {
     translate.addLangs(['en', 'es']);
     translate.setDefaultLang('es');
   }
+  
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.getTasks();
-    this.listTask.subscribe((tasks)=>{
+    this.subscription = this.listTask.subscribe((tasks)=>{
       this.dataSource = new MatTableDataSource(tasks);
       this.taskHours = this.getHoursOf(tasks);
     })
