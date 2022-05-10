@@ -1,0 +1,21 @@
+<div class="nav-container">
+  <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" routerLink="/dashboard"> MTask</a>
+      <div class="navbar-brand logo"></div>
+      <span class="form-inline">
+        <select 
+            class="form-control" 
+            #selectedLang 
+            (change)="switchLang(selectedLang.value)">
+          <option *ngFor="let language of translate.getLangs()" 
+            [value]="language"
+            [selected]="language === translate.currentLang">
+            {{ language }}
+          </option>
+        </select>
+      </span>
+    </div>
+  </nav>
+</div>
+  

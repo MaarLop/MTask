@@ -1,0 +1,28 @@
+
+h2{
+  color: whitesmoke;
+  background-color: rgba(89 100 111);
+  }
+button:focus{
+  outline: none;
+}
+.form-group{
+  color: rgb(204, 126, 23);
+  
+}
+table{
+  width: 100%;
+}
+
+th{
+  color:ghostwhite;
+  background-color:#343a40;
+  border-color: #454d55; 
+  text-align: center;
+  font-weight: bold;
+}
+  
+
+span{
+  color: black !important
+}

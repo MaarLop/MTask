@@ -1,0 +1,56 @@
+    <h1 mat-dialog-title>{{'CreateTask'| translate}}</h1>
+
+    <form [formGroup]="newTaskForm" novalidat autocomplete="off">
+    
+    <div class="form-group" >
+        <mat-form-field>
+        <mat-label>{{'Name'|translate}}</mat-label>
+        <input matInput required minlength="4" name="name" formControlName="name">
+        </mat-form-field>
+        <div *ngIf="newTaskForm.get('name').hasError('required') && newTaskForm.get('name').touched" style="margin-top: -20px;">
+            <span class="mda-form-msg">{{'RequiredField'| translate}}</span>
+        </div>
+    </div>
+    <div class="form-group" >
+        <mat-form-field>
+            <mat-label>{{'Description'|translate}}</mat-label>
+            <input matInput required minlength="4" name="description" formControlName="description">
+        </mat-form-field>
+    </div>
+    <div class="form-group" >
+        <mat-form-field>
+        <mat-label>{{'Estimation'|translate}}</mat-label>
+        <input matInput required min="0" name="amount" formControlName="amount" type="number">
+        </mat-form-field>
+        <mat-form-field >
+            <mat-label>{{'EstimationType'|translate}}</mat-label>
+            <mat-select [(ngModel)]="estimationType" formControlName="typeEstimate" [formGroup]="newTaskForm" required >
+                <mat-option value="1">{{'Hours'|translate}}</mat-option>
+                <mat-option value="2">{{'Days'|translate}}</mat-option>
+            </mat-select>
+
+        </mat-form-field>
+        <div *ngIf="(newTaskForm.get('amount').hasError('required') && newTaskForm.get('amount').touched) ||
+            (newTaskForm.get('typeEstimate').hasError('required') && newTaskForm.get('typeEstimate').touched)" style="margin-top: -20px;">
+            <span class="mda-form-msg">{{'RequiredField'| translate}}</span>
+        </div>
+    </div>
+    
+    <div class="form-group" >
+        <mat-form-field appearance="legacy">
+            <mat-label>{{'State'|translate}}</mat-label>
+            <mat-select [(ngModel)]="selectedState" formControlName="state" [formGroup]="newTaskForm" required>
+                <mat-option value="Planned">{{'Planned'|translate}}</mat-option>
+                <mat-option value="InProgress">{{'InProgress'|translate}}</mat-option>
+                <mat-option value="Completed">{{'Completed'|translate}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    
+    </form>
+
+    <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">{{'Cancel'|translate}}</button>
+    <button mat-flat-button color="accent" cdkFocusInitial [disabled]="newTaskForm.invalid"
+    type="button" style="margin-left: 10px;" (click)="saveTask()">Ok</button>
+    </div>
