@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { DayEstimation } from '../_models/estimation-state/estimation.days';
 import { HourEstimation } from '../_models/estimation-state/estimation.hours';
 import { Task } from '../_models/task';
@@ -30,28 +31,28 @@ export class TaskService {
     ]
   }
 
-  public getAllTask(): Task []{
-    return this.tasks;
+  public getAllTask(): Observable<Task[]>{
+    return of(this.tasks);
   }
 
-  public getPlannedTask(): Task []{
+  public getPlannedTask(): Observable<Task[]>{
     const planedTask = this.tasks.filter(task => task.isPlanned());
-    return planedTask;
+    return of(planedTask);
   }
 
-  public getClosedTask(): Task []{
+  public getClosedTask(): Observable<Task[]>{
     const closedTask =  this.tasks.filter(task => task.isCompleted());
 
-    return closedTask;
+    return of(closedTask);
   }
 
-  public getInProgressTask(): Task []{
+  public getInProgressTask(): Observable<Task[]>{
     const inProgressTask =  this.tasks.filter(task => task.isInProgress());
 
-    return inProgressTask;
+    return of(inProgressTask);
   }
 
-  createOrUpdateTask(task: Task): Task[]{
+  createOrUpdateTask(task: Task): Observable<Task[]>{
 
     if (task.id == 0){
       task.id = this.tasks.length + 1;
@@ -64,7 +65,7 @@ export class TaskService {
         }
       });
     }
-    return this.tasks;
+    return of(this.tasks);
   }
 
   close( idTask: number){

@@ -25,7 +25,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [ 'name', 'description', 'estimate', 'state', 'action'];
   dataSource: MatTableDataSource<any>;
   selected = '1';
-  subscription: Subscription;
+  subscriptions: Subscription[] = [];
 
   @ViewChild('input', {static: true}) filter: ElementRef;
   
@@ -44,15 +44,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptions.forEach((s)=> s.unsubscribe());
   }
 
   ngOnInit(): void {
     this.getTasks();
-    this.subscription = this.listTask$.subscribe((tasks)=>{
+    this.subscriptions.push(this.listTask$.subscribe((tasks)=>{
       this.dataSource = new MatTableDataSource(tasks);
       this.taskHours = this.getHoursOf(tasks);
-    })
+    }));
   }
   ngAfterViewChecked()
   {
@@ -66,19 +66,27 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
   
   getTasks(): void {
-    this.listTask$.next(this.taskService.getAllTask());
+    this.subscriptions.push(this.taskService.getAllTask().subscribe((tasks)=>{
+      this.listTask$.next(tasks);
+    }));
   }
 
   getPlannedTask(): void {
-    this.listTask$.next(this.taskService.getPlannedTask());
+    this.subscriptions.push(this.taskService.getPlannedTask().subscribe((tasks)=>{
+      this.listTask$.next(tasks);
+    }));
   }
 
   getInProgressTask(): void {
-    this.listTask$.next(this.taskService.getInProgressTask());
+    this.subscriptions.push(this.taskService.getInProgressTask().subscribe((tasks)=>{
+      this.listTask$.next(tasks);
+    }));
   }
 
   getClosedTask(): void {
-    this.listTask$.next(this.taskService.getClosedTask());
+    this.subscriptions.push(this.taskService.getClosedTask().subscribe((tasks)=>{
+      this.listTask$.next(tasks);
+    }));
   }
 
   deleteTask(id:number){
@@ -101,7 +109,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
       if(result == null){
         return;
       }
-      this.listTask$.next(this.taskService.createOrUpdateTask(result));
+      this.subscriptions.push(this.taskService.createOrUpdateTask(result).subscribe((list)=>{
+        this.listTask$.next(list);
+      }))
     });    
   } 
 
@@ -114,7 +124,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
       if(result == null){
         return;
       }
-      this.listTask$.next(this.taskService.createOrUpdateTask(result));
+      this.subscriptions.push(this.taskService.createOrUpdateTask(result).subscribe((list)=>{
+        this.listTask$.next(list);
+      }));
     });
 
   }
