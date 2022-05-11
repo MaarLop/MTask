@@ -33,37 +33,12 @@ export class TaskService {
   }
 
   public getTask(filter): Observable<Task[]>{
-    switch(filter){
-      case TaskStateEnum.Planned: {
-        return this.getPlannedTask();
-      }
-      case TaskStateEnum.InProgress: {
-        return this.getInProgressTask();        
-      }
-      case TaskStateEnum.Completed: {
-        return this.getClosedTask();
-      }
-      default: {
-        return of(this.tasks);
-      }
+    if(filter === 0){
+      return of(this.tasks);
     }
-  }
-
-  public getPlannedTask(): Observable<Task[]>{
-    const planedTask = this.tasks.filter(task => task.isPlanned());
-    return of(planedTask);
-  }
-
-  public getClosedTask(): Observable<Task[]>{
-    const closedTask =  this.tasks.filter(task => task.isCompleted());
-
-    return of(closedTask);
-  }
-
-  public getInProgressTask(): Observable<Task[]>{
-    const inProgressTask =  this.tasks.filter(task => task.isInProgress());
-
-    return of(inProgressTask);
+    else{
+      return of(this.tasks.filter((task)=> task.state.state === filter));
+    }
   }
 
   createOrUpdateTask(task: Task): Observable<Task[]>{
