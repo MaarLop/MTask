@@ -19,7 +19,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 })
 
 export class TaskListComponent implements OnInit, OnDestroy {
-  listTask = new BehaviorSubject<Task[]>([])
+  listTask$ = new BehaviorSubject<Task[]>([])
   taskHours: number = 0;
 
   displayedColumns: string[] = [ 'name', 'description', 'estimate', 'state', 'action'];
@@ -49,7 +49,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getTasks();
-    this.subscription = this.listTask.subscribe((tasks)=>{
+    this.subscription = this.listTask$.subscribe((tasks)=>{
       this.dataSource = new MatTableDataSource(tasks);
       this.taskHours = this.getHoursOf(tasks);
     })
@@ -66,23 +66,23 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
   
   getTasks(): void {
-    this.listTask.next(this.taskService.getAllTask());
+    this.listTask$.next(this.taskService.getAllTask());
   }
 
   getPlannedTask(): void {
-    this.listTask.next(this.taskService.getPlannedTask());
+    this.listTask$.next(this.taskService.getPlannedTask());
   }
 
   getInProgressTask(): void {
-    this.listTask.next(this.taskService.getInProgressTask());
+    this.listTask$.next(this.taskService.getInProgressTask());
   }
 
   getClosedTask(): void {
-    this.listTask.next(this.taskService.getClosedTask());
+    this.listTask$.next(this.taskService.getClosedTask());
   }
 
   deleteTask(id:number){
-    this.listTask.next(this.taskService.delete(id));
+    this.listTask$.next(this.taskService.delete(id));
   };
   
   applyFilter(event: Event) {
@@ -101,7 +101,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       if(result == null){
         return;
       }
-      this.listTask.next(this.taskService.createOrUpdateTask(result));
+      this.listTask$.next(this.taskService.createOrUpdateTask(result));
     });    
   } 
 
@@ -114,7 +114,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       if(result == null){
         return;
       }
-      this.listTask.next(this.taskService.createOrUpdateTask(result));
+      this.listTask$.next(this.taskService.createOrUpdateTask(result));
     });
 
   }
@@ -124,7 +124,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   changeState(idTask: number){
-    this.listTask.next(this.taskService.changeTaskState(idTask));
+    this.listTask$.next(this.taskService.changeTaskState(idTask));
   }
 
   public onOptionsSelected(event) {
@@ -157,7 +157,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   forceClose(taskId){
-    this.listTask.next(this.taskService.close(taskId));
+    this.listTask$.next(this.taskService.close(taskId));
   }
 
   getHoursOf (taskList: Task[]){
