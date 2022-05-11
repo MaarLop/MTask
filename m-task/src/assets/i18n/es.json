@@ -23,5 +23,6 @@
     "ChangeToNextState": "Cambiar al próximo estado",
     "CloseTask": "Cerrar tarea",
     "TaskSaved": "Tarea creada con exito!",
-    "TaskUpdated": "Tarea actualizada con exito!"
+    "TaskUpdated": "Tarea actualizada con exito!",
+    "EstimationType": "Tipo de estimación"
 }

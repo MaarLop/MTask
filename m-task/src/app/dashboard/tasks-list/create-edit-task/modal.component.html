@@ -25,8 +25,8 @@
         <mat-form-field >
             <mat-label>{{'EstimationType'|translate}}</mat-label>
             <mat-select [(ngModel)]="estimationType" formControlName="typeEstimate" [formGroup]="newTaskForm" required >
-                <mat-option value="1">{{'Hours'|translate}}</mat-option>
-                <mat-option value="2">{{'Days'|translate}}</mat-option>
+                <mat-option value="{{estimationTypeEnum.Hours}}">{{estimationTypeEnum[estimationTypeEnum.Hours]|translate}}</mat-option>
+                <mat-option value="{{estimationTypeEnum.Days}}">{{estimationTypeEnum[estimationTypeEnum.Days]|translate}}</mat-option>
             </mat-select>
 
         </mat-form-field>

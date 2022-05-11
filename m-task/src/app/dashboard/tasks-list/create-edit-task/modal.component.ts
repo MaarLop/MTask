@@ -10,6 +10,7 @@ import { TaskService } from 'src/app/services/task.service';
 import { EstimationContext } from 'src/app/_models/estimation-state/estimaioncontext';
 import { StateContext } from 'src/app/_models/task-state-state/task.state.context';
 import { TaskStateEnum } from 'src/app/_models/enums/task-state-enum';
+import { EstimationTypeEnum } from 'src/app/_models/enums/estimation-type-enum';
 
 @Component({
   selector: 'app-modal',
@@ -25,6 +26,7 @@ export class CreateEditModalComponent implements OnInit {
   idTask:number;
   task: any;
   taskStates = TaskStateEnum;
+  estimationTypeEnum = EstimationTypeEnum;
   
   constructor(  public dialogRef: MatDialogRef<CreateEditModalComponent>,
                 private fb: FormBuilder,
@@ -103,7 +105,7 @@ export class CreateEditModalComponent implements OnInit {
   }
 
   createEstimation(amount, type): IEstimation{
-    return EstimationContext.getEstimation(amount,type);
+    return EstimationContext.getEstimation(amount,Number(type));
   }
 
   createState(type: number): ITaskState{
