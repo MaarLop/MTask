@@ -10,6 +10,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Task } from 'src/app/_models/task';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { TaskStateEnum } from 'src/app/_models/enums/task-state-enum';
+import { Filter } from 'src/app/_models/filter';
 
 
 
@@ -28,7 +29,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   selected = '0';
   subscriptions: Subscription[] = [];
   taskStates = TaskStateEnum;
-
+  filterValues = [];
   @ViewChild('input', {static: true}) filter: ElementRef;
   
   private paginatorTask: MatPaginator;
@@ -48,8 +49,13 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((s)=> s.unsubscribe());
   }
-
+  buildStateFilterArray(): Object[] {
+    const isNumber = value => isNaN(Number(value));
+    return Object.keys(this.taskStates).filter((isNumber))
+              .map(key => (new Filter(this.taskStates[key], key )));
+ }
   ngOnInit(): void {
+    this.filterValues = (this.buildStateFilterArray());
     this.getTasks(0);
     this.subscriptions.push(this.listTask$.subscribe((tasks)=>{
       this.dataSource = new MatTableDataSource(tasks);

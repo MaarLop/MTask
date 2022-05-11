@@ -21,9 +21,7 @@
         <mat-label>{{ 'Status' | translate }}</mat-label>
         <mat-select [(value)]="selected"  (selectionChange)='onOptionsSelected($event)'>
           <mat-option value="0">{{ 'All' | translate }}</mat-option>
-          <mat-option value="{{taskStates.Planned}}">{{ taskStates[taskStates.Planned] | translate }}</mat-option>
-          <mat-option value="{{taskStates.InProgress}}">{{ taskStates[taskStates.InProgress] | translate }}</mat-option>
-          <mat-option value="{{taskStates.Completed}}">{{ taskStates[taskStates.Completed] | translate }}</mat-option>
+          <mat-option *ngFor="let filterValue of filterValues" value="{{filterValue.id}}">{{ filterValue.name | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
 
