@@ -1,12 +1,13 @@
+import { TaskStateEnum } from '../enums/task-state-enum';
 import { Completed } from './task.state.completed';
 import { ITaskState } from './task.state.interface';
 
 export class InProgress implements ITaskState{
-    state: string;
+    state: TaskStateEnum;
     nextState: ITaskState;
 
     constructor(){
-        this.state= "InProgress";
+        this.state= TaskStateEnum.InProgress;
         this.nextState = new Completed();
     }
     canChangeState(): boolean {

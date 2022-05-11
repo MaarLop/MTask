@@ -40,9 +40,9 @@
         <mat-form-field appearance="legacy">
             <mat-label>{{'State'|translate}}</mat-label>
             <mat-select [(ngModel)]="selectedState" formControlName="state" [formGroup]="newTaskForm" required>
-                <mat-option value="Planned">{{'Planned'|translate}}</mat-option>
-                <mat-option value="InProgress">{{'InProgress'|translate}}</mat-option>
-                <mat-option value="Completed">{{'Completed'|translate}}</mat-option>
+                <mat-option value="{{taskStates.Planned}}">{{ taskStates[taskStates.Planned] | translate }}</mat-option>
+          <mat-option value="{{taskStates.InProgress}}">{{ taskStates[taskStates.InProgress] | translate }}</mat-option>
+          <mat-option value="{{taskStates.Completed}}">{{ taskStates[taskStates.Completed] | translate }}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>

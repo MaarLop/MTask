@@ -9,6 +9,7 @@ import { CreateEditModalComponent } from './create-edit-task/modal.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { Task } from 'src/app/_models/task';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { TaskStateEnum } from 'src/app/_models/enums/task-state-enum';
 
 
 
@@ -24,8 +25,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = [ 'name', 'description', 'estimate', 'state', 'action'];
   dataSource: MatTableDataSource<any>;
-  selected = '1';
+  selected = '0';
   subscriptions: Subscription[] = [];
+  taskStates = TaskStateEnum;
 
   @ViewChild('input', {static: true}) filter: ElementRef;
   
@@ -148,16 +150,16 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   reloadTask(): void {
     switch(this.selected){
-      case "2": {
+      case this.taskStates.Planned.toString(): {
         this.getPlannedTask();
         break;
       }
-      case "3": {
+      case this.taskStates.InProgress.toString(): {
         this.getInProgressTask();
         break;
         
       }
-      case "4": {
+      case this.taskStates.Completed.toString(): {
         this.getClosedTask();
         break;
       }

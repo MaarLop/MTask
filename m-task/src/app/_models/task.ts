@@ -1,3 +1,4 @@
+import { TaskStateEnum } from './enums/task-state-enum';
 import { IEstimation } from './estimation-state/estimation.state.interface';
 import { Completed } from './task-state-state/task.state.completed';
 import { InProgress } from './task-state-state/task.state.inprogress';
@@ -49,7 +50,7 @@ export class Task {
     }
 
     getNameOfState(): string{
-      return this.state.state;
+      return TaskStateEnum[this.state.state];
     }
 
     getHours(): number {

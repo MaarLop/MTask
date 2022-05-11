@@ -9,6 +9,7 @@ import { ITaskState } from 'src/app/_models/task-state-state/task.state.interfac
 import { TaskService } from 'src/app/services/task.service';
 import { EstimationContext } from 'src/app/_models/estimation-state/estimaioncontext';
 import { StateContext } from 'src/app/_models/task-state-state/task.state.context';
+import { TaskStateEnum } from 'src/app/_models/enums/task-state-enum';
 
 @Component({
   selector: 'app-modal',
@@ -23,7 +24,8 @@ export class CreateEditModalComponent implements OnInit {
   newTaskForm:FormGroup;
   idTask:number;
   task: any;
-
+  taskStates = TaskStateEnum;
+  
   constructor(  public dialogRef: MatDialogRef<CreateEditModalComponent>,
                 private fb: FormBuilder,
                 private snackBar:MatSnackBar,
@@ -76,10 +78,10 @@ export class CreateEditModalComponent implements OnInit {
   saveTask() {
     let taskId= this.idTask ?? 0;
     let name= this.newTaskForm.get('name').value;
-    let description =  this.newTaskForm.get('description').value;;
-    let amount = this.newTaskForm.get('amount').value;;
-    let typeEstimate = this.newTaskForm.get('typeEstimate').value;;
-    let selectedState =  this.newTaskForm.get('state').value;;
+    let description =  this.newTaskForm.get('description').value;
+    let amount = this.newTaskForm.get('amount').value;
+    let typeEstimate = this.newTaskForm.get('typeEstimate').value;
+    let selectedState =  this.newTaskForm.get('state').value;
 
     let estimation: IEstimation = this.createEstimation(amount, typeEstimate);
     let state: ITaskState = this.createState(selectedState);
@@ -104,8 +106,8 @@ export class CreateEditModalComponent implements OnInit {
     return EstimationContext.getEstimation(amount,type);
   }
 
-  createState(type): ITaskState{
-    return StateContext.getState(type);
+  createState(type: number): ITaskState{
+    return StateContext.getState(Number(type));
   }
   
 

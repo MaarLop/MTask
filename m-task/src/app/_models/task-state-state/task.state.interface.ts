@@ -1,5 +1,7 @@
+import { TaskStateEnum } from "../enums/task-state-enum";
+
 export interface ITaskState{
-    state: string;
+    state: TaskStateEnum;
     nextState: ITaskState;
     
     canChangeState(): boolean;
