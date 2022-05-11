@@ -50,7 +50,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getTasks();
+    this.getTasks(0);
     this.subscriptions.push(this.listTask$.subscribe((tasks)=>{
       this.dataSource = new MatTableDataSource(tasks);
       this.taskHours = this.getHoursOf(tasks);
@@ -67,32 +67,16 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.translate.use(lang);
   }
   
-  getTasks(): void {
-    this.subscriptions.push(this.taskService.getAllTask().subscribe((tasks)=>{
-      this.listTask$.next(tasks);
-    }));
-  }
-
-  getPlannedTask(): void {
-    this.subscriptions.push(this.taskService.getPlannedTask().subscribe((tasks)=>{
-      this.listTask$.next(tasks);
-    }));
-  }
-
-  getInProgressTask(): void {
-    this.subscriptions.push(this.taskService.getInProgressTask().subscribe((tasks)=>{
-      this.listTask$.next(tasks);
-    }));
-  }
-
-  getClosedTask(): void {
-    this.subscriptions.push(this.taskService.getClosedTask().subscribe((tasks)=>{
+  getTasks(filter): void {
+    this.subscriptions.push(this.taskService.getTask(filter).subscribe((tasks)=>{
       this.listTask$.next(tasks);
     }));
   }
 
   deleteTask(id:number){
-    this.listTask$.next(this.taskService.delete(id));
+    this.subscriptions.push(this.taskService.delete(id).subscribe((tasks)=>{
+      this.listTask$.next(tasks);
+    }));
   };
   
   applyFilter(event: Event) {
@@ -118,19 +102,19 @@ export class TaskListComponent implements OnInit, OnDestroy {
   } 
 
   editTask(idTask): void{
-    let task= this.taskService.getTakById(idTask);
-    const dialogRef = this.dialog.open(CreateEditModalComponent, {
+    this.subscriptions.push(this.taskService.getTakById(idTask).subscribe((task)=>{
+      const dialogRef = this.dialog.open(CreateEditModalComponent, {
         data: { idTask: idTask, task: task }
       });
-    dialogRef.afterClosed().subscribe(result=>{
-      if(result == null){
-        return;
-      }
-      this.subscriptions.push(this.taskService.createOrUpdateTask(result).subscribe((list)=>{
-        this.listTask$.next(list);
-      }));
-    });
-
+      dialogRef.afterClosed().subscribe(result=>{
+        if(result == null){
+          return;
+        }
+        this.subscriptions.push(this.taskService.createOrUpdateTask(result).subscribe((list)=>{
+          this.listTask$.next(list);
+        }));
+      });
+    }));
   }
 
   findIndexToUpdate(newItem) { 
@@ -138,40 +122,22 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   changeState(idTask: number){
-    this.listTask$.next(this.taskService.changeTaskState(idTask));
+    this.subscriptions.push(this.taskService.changeTaskState(idTask).subscribe((list)=>{
+      this.listTask$.next(list);
+    }));
   }
 
   public onOptionsSelected(event) {
     const value = event.value;
     this.selected = value;
 
-    this.reloadTask();
-  }
-
-  reloadTask(): void {
-    switch(this.selected){
-      case this.taskStates.Planned.toString(): {
-        this.getPlannedTask();
-        break;
-      }
-      case this.taskStates.InProgress.toString(): {
-        this.getInProgressTask();
-        break;
-        
-      }
-      case this.taskStates.Completed.toString(): {
-        this.getClosedTask();
-        break;
-      }
-      default: {
-        this.getTasks();
-        break;
-      }
-    }
+    this.getTasks(Number(this.selected));
   }
 
   forceClose(taskId){
-    this.listTask$.next(this.taskService.close(taskId));
+    this.subscriptions.push(this.taskService.close(taskId).subscribe((list)=>{
+      this.listTask$.next(list);
+    }));
   }
 
   getHoursOf (taskList: Task[]){

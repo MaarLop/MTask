@@ -53,7 +53,8 @@ export class CreateEditModalComponent implements OnInit {
   }
   edit() {
     this.estimationType = this.task.estimate.isHourEstimated ? "1" : "2";
-    this.selectedState = this.task.state.state;
+    this.selectedState = this.task.state.state.toString();
+    console.log(this.selectedState)
     this.newTaskForm.patchValue({
       name: this.task.name,
       description: this.task.description,

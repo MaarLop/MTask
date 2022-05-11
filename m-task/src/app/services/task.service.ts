@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { TaskStateEnum } from '../_models/enums/task-state-enum';
 import { DayEstimation } from '../_models/estimation-state/estimation.days';
 import { HourEstimation } from '../_models/estimation-state/estimation.hours';
 import { Task } from '../_models/task';
@@ -31,8 +32,21 @@ export class TaskService {
     ]
   }
 
-  public getAllTask(): Observable<Task[]>{
-    return of(this.tasks);
+  public getTask(filter): Observable<Task[]>{
+    switch(filter){
+      case TaskStateEnum.Planned: {
+        return this.getPlannedTask();
+      }
+      case TaskStateEnum.InProgress: {
+        return this.getInProgressTask();        
+      }
+      case TaskStateEnum.Completed: {
+        return this.getClosedTask();
+      }
+      default: {
+        return of(this.tasks);
+      }
+    }
   }
 
   public getPlannedTask(): Observable<Task[]>{
@@ -75,17 +89,17 @@ export class TaskService {
       }
     });
     
-    return this.tasks;
+    return of(this.tasks);
   }
 
-  getTakById(idTask: number): Task{
+  getTakById(idTask: number): Observable<Task>{
     let task = this.tasks.find((t) =>{ 
       return t.id == idTask
     });
     if(task == null){
       throw new Error("The task doesn't exist");
     }
-    return task;
+    return of(task);
   }
 
   changeTaskState(idTask: number) {
@@ -94,11 +108,11 @@ export class TaskService {
         currentTask.changeState();
       }
     });
-    return this.tasks;
+    return of(this.tasks);
   }
 
-  delete(idTask: number): Task[] {
+  delete(idTask: number): Observable<Task[]> {
     this.tasks = this.tasks.filter(task => task.id != idTask);
-    return this.tasks;
+    return of(this.tasks);
   }
 }
