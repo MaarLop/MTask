@@ -11,6 +11,8 @@ import { EstimationContext } from 'src/app/_models/estimation-state/estimaioncon
 import { StateContext } from 'src/app/_models/task-state-state/task.state.context';
 import { TaskStateEnum } from 'src/app/_models/enums/task-state-enum';
 import { EstimationTypeEnum } from 'src/app/_models/enums/estimation-type-enum';
+import { StateListHelper } from 'src/app/helpers/state-list-helper';
+import { EstimateListHelper } from 'src/app/helpers/estimate-list-helper';
 
 @Component({
   selector: 'app-modal',
@@ -27,7 +29,9 @@ export class CreateEditModalComponent implements OnInit {
   task: any;
   taskStates = TaskStateEnum;
   estimationTypeEnum = EstimationTypeEnum;
-  
+  statesValues = [];
+  estimateValues = [];
+
   constructor(  public dialogRef: MatDialogRef<CreateEditModalComponent>,
                 private fb: FormBuilder,
                 private snackBar:MatSnackBar,
@@ -46,7 +50,10 @@ export class CreateEditModalComponent implements OnInit {
     translate.setDefaultLang('es');
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.statesValues = StateListHelper.buildStateFilterArray();
+    this.estimateValues = EstimateListHelper.buildStateFilterArray();
+    console.log(this.estimateValues)
     if (this.idTask !== undefined) {
       this.edit();
     }

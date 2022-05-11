@@ -25,8 +25,7 @@
         <mat-form-field >
             <mat-label>{{'EstimationType'|translate}}</mat-label>
             <mat-select [(ngModel)]="estimationType" formControlName="typeEstimate" [formGroup]="newTaskForm" required >
-                <mat-option value="{{estimationTypeEnum.Hours}}">{{estimationTypeEnum[estimationTypeEnum.Hours]|translate}}</mat-option>
-                <mat-option value="{{estimationTypeEnum.Days}}">{{estimationTypeEnum[estimationTypeEnum.Days]|translate}}</mat-option>
+                <mat-option *ngFor="let estimationType of estimateValues" value="{{estimationType.id}}">{{ estimationType.name | translate}}</mat-option>
             </mat-select>
 
         </mat-form-field>
@@ -40,9 +39,7 @@
         <mat-form-field appearance="legacy">
             <mat-label>{{'State'|translate}}</mat-label>
             <mat-select [(ngModel)]="selectedState" formControlName="state" [formGroup]="newTaskForm" required>
-                <mat-option value="{{taskStates.Planned}}">{{ taskStates[taskStates.Planned] | translate }}</mat-option>
-          <mat-option value="{{taskStates.InProgress}}">{{ taskStates[taskStates.InProgress] | translate }}</mat-option>
-          <mat-option value="{{taskStates.Completed}}">{{ taskStates[taskStates.Completed] | translate }}</mat-option>
+                <mat-option *ngFor="let filterValue of statesValues" value="{{filterValue.id}}">{{ filterValue.name | translate}}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>

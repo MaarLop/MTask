@@ -1,4 +1,4 @@
-export class Filter {
+export class Option {
 
     id: number;
     name: string;
